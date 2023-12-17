@@ -77,9 +77,61 @@ class BinarySearchTree {
     return null;
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  
+  remove(data) {
+    if (!this.has(data)) {
+      console.log("Not exist", data);
+      return false;
+    }
+    let current = this.find(data);
+    current = this.removeNode(current);
+    console.log("After delete: ", current);
+    return true;
+  }
+
+  removeNode(node) {
+    console.log("Need to delete: ", node);
+    // This part is not working!!!
+    // need to remove connecteion from the parent element as well !!! this one will be harder! 
+    if (!node.left && !node.right) {
+      return null;
+    }
+    if (!node.left) {
+      let temp = this.minFind(node.right);
+      node.data = temp.data;
+      temp = this.removeNode(temp);
+      return node;
+    }
+    if (!node.right) {
+      let temp = this.maxFind(node.left);
+      node.data = temp.data;
+      temp = this.removeNode(temp);
+      return node;
+    }
+    let temp = this.minFind(node.right);
+    node.data = temp.data;
+    temp = this.removeNode(temp);
+    return node;
+  }
+
+  minFind(node) {
+    while (node) {
+      if (!node.left) {
+        break;
+      }
+      node = node.left;
+    }
+    return node;
+  }
+
+  maxFind(node) {
+    while (node) {
+      if (!node.right) {
+        break;
+      }
+      node = node.right;
+    }
+    return node;
   }
 
   min() {
