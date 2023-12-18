@@ -77,43 +77,58 @@ class BinarySearchTree {
     return null;
   }
 
-  
   remove(data) {
     if (!this.has(data)) {
-      console.log("Not exist", data);
       return false;
     }
-    let current = this.find(data);
-    current = this.removeNode(current);
-    console.log("After delete: ", current);
+    this.rootNode = this.removeNode(data, this.rootNode);
     return true;
   }
-
-  removeNode(node) {
-    console.log("Need to delete: ", node);
-    // This part is not working!!!
-    // need to remove connecteion from the parent element as well !!! this one will be harder! 
-    if (!node.left && !node.right) {
-      return null;
+  removeNode(data, nodeElement) {
+    let parent = nodeElement;
+    let current = nodeElement;
+    while (current) {
+      if (current.data === data) {
+        break;
+      } else if (current.data > data) {
+        parent = current;
+        current = current.left;
+      } else if (current.data < data) {
+        parent = current;
+        current = current.right;
+      } else {
+        break;
+      }
     }
-    if (!node.left) {
-      let temp = this.minFind(node.right);
-      node.data = temp.data;
-      temp = this.removeNode(temp);
-      return node;
+    console.log("Parent and child: ", parent, current, data);
+    if (!current.right && !current.left) {
+      console.log(`remove ${data} from leaf`);
+      if (current.data > parent.data) {
+        parent.right = null;
+      } else {
+        parent.left = null;
+      }
+      current = null;
+      return nodeElement;
     }
-    if (!node.right) {
-      let temp = this.maxFind(node.left);
-      node.data = temp.data;
-      temp = this.removeNode(temp);
-      return node;
+    // if there is no left child will be error
+    if (current.left) {
+      let maxEl = this.maxFind(current.left)
+      console.log("max element of left child: ", maxEl);
+      const valueMax = maxEl.data;
+      parent = this.removeNode(valueMax, parent);
+      current.data = valueMax;
+      return nodeElement;
+    } else {
+      let minEl = this.minFind(current.right)
+      console.log("max element of left child: ", minEl);
+      const valueMin = minEl.data;
+      parent = this.removeNode(valueMin, parent);
+      current.data = valueMin;
+      return nodeElement;
     }
-    let temp = this.minFind(node.right);
-    node.data = temp.data;
-    temp = this.removeNode(temp);
-    return node;
   }
-
+  
   minFind(node) {
     while (node) {
       if (!node.left) {
@@ -123,7 +138,6 @@ class BinarySearchTree {
     }
     return node;
   }
-
   maxFind(node) {
     while (node) {
       if (!node.right) {
@@ -133,7 +147,6 @@ class BinarySearchTree {
     }
     return node;
   }
-
   min() {
     if (!this.rootNode){
       return null;
